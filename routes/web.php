@@ -6,6 +6,8 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MejaController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderAdminController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -42,6 +44,16 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
     });
 
+    Route::middleware(['customer'])->group(function () {
+        Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+        Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+        Route::get('/order/history', [OrderController::class, 'history'])->name('order.history');
+    });
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/admin/orders', [OrderAdminController::class, 'index'])->name('admin.orders');
+        Route::post('/admin/orders/{order}/status', [OrderAdminController::class, 'updateStatus'])->name('admin.orders.status');
+    });
     
     // ==================== MEJA ROUTES ====================
     // Hanya CS yang bisa mengelola meja

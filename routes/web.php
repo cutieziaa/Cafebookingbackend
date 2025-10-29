@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/menu/{menu}', [MenuController::class, 'show'])->name('menu.show');
 
     // Hanya ADMIN yang bisa CRUD menu
-    Route::middleware(['admin'])->group(function () {
+    Route::prefix('test')->group(function () {
         Route::get('/menu/create', [MenuController::class, 'create'])->name('menu.create');
         Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');
         Route::get('/menu/{menu}/edit', [MenuController::class, 'edit'])->name('menu.edit');

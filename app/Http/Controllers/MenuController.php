@@ -11,7 +11,8 @@ class MenuController extends Controller
     public function __construct()
     {
         // Hanya ADMIN yang boleh CRUD (create, edit, update, destroy)
-        $this->middleware('admin')->except(['index', 'show']);
+       $this->middleware('auth');
+       $this->middleware('admin')->except(['index', 'show']);
     }
 
     public function index()
@@ -22,7 +23,7 @@ class MenuController extends Controller
 
     public function create()
     {
-        return view('menu.create'); 
+         return view('menu.create');
     }
 
     public function store(Request $request)
@@ -54,7 +55,7 @@ class MenuController extends Controller
 
     public function show(Menu $menu)
     {
-        return view('menu.show', compact('menu'));
+        return view('menu.show', compact(var_name: 'menu'));
     }
 
     public function edit(Menu $menu)

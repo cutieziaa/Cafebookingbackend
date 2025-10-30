@@ -11,7 +11,7 @@
                 <th>Menu</th>
                 <th>Jumlah</th>
                 <th>Tipe</th>
-                <th>Status</th>
+                <th>Status</th> 
                 <th>Aksi</th>
             </tr>
         </thead>

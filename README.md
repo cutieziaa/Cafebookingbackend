@@ -1,66 +1,213 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CafeBookingBackend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Backend resmi untuk aplikasi **CafeBooking**, sistem pemesanan kafe yang mengelola data pengguna, meja, jadwal reservasi, serta autentikasi admin dan pelanggan.  
+Dikembangkan menggunakan **Laravel (PHP)** dan **MySQL** sebagai database utama.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 1. Clone Repository
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Jika kamu baru pertama kali ingin mengambil project ini:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+git clone https://github.com/cutieziaa/Cafebookingbackend.git
+cd Cafebookingbackend
+```
 
-## Learning Laravel
+Kemudian buka project di **Visual Studio Code**:
+```bash
+code .
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 2. Persiapan & Instalasi
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Pastikan kamu sudah menginstal hal berikut:
+- [Git](https://git-scm.com/)
+- [PHP ≥ 8.1](https://www.php.net/)
+- [Composer](https://getcomposer.org/)
+- [MySQL](https://www.mysql.com/)
+- [VS Code](https://code.visualstudio.com/)
 
-## Laravel Sponsors
+### Langkah Setup:
+1. Install dependensi Laravel:
+   ```bash
+   composer install
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2. Duplikat file `.env.example` menjadi `.env`:
+   ```bash
+   cp .env.example .env
+   ```
 
-### Premium Partners
+3. Buat **App Key** Laravel:
+   ```bash
+   php artisan key:generate
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 3. Setup Database
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Buka **phpMyAdmin** atau terminal MySQL, kemudian buat database baru:
+   ```sql
+   CREATE DATABASE cafebooking;
+   ```
 
-## Code of Conduct
+2. Ubah konfigurasi di file `.env` sesuai database kamu, contoh:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=cafebooking
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. Jalankan migrasi tabel ke database:
+   ```bash
+   php artisan migrate
+   ```
 
-## Security Vulnerabilities
+4. (Opsional) Jika terdapat data awal (seeding):
+   ```bash
+   php artisan db:seed
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 4. Menjalankan Server Lokal
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Setelah semua siap, jalankan perintah berikut untuk memulai backend:
+
+```bash
+php artisan serve
+```
+
+Server akan berjalan di:
+ http://127.0.0.1:8000  
+
+---
+
+## 5. Workflow di VS Code (Commit & Push)
+
+### a. Update kode terbaru
+Sebelum mulai edit:
+```bash
+git checkout main
+git pull origin main
+```
+
+### b. Melakukan perubahan
+Edit file yang diperlukan di VS Code.
+
+### c. Commit & Push
+```bash
+git status
+git add .
+git commit -m "Menambahkan fitur baru pada modul booking"
+git push origin main
+```
+
+---
+
+## 6. Membuat Branch untuk Perbaikan atau Fitur Baru
+
+Agar tidak langsung mengubah branch `main`, buat branch terpisah:
+
+1. Buat dan pindah ke branch baru:
+   ```bash
+   git checkout -b nama-branch-baru
+   ```
+   Contoh:  
+   ```bash
+   git checkout -b fix-validasi-reservasi
+   ```
+
+2. Lakukan perubahan kode di branch ini.
+
+3. Simpan dan kirim ke GitHub:
+   ```bash
+   git add .
+   git commit -m "Memperbaiki validasi input pada form reservasi"
+   git push origin nama-branch-baru
+   ```
+
+4. Buka GitHub → buat **Pull Request** ke `main` agar perubahan bisa direview dan digabungkan.
+
+---
+
+## 7. Menyinkronkan Branch dengan Main
+
+Jika branch utama (`main`) berubah, sinkronkan branch kerjamu agar tetap update:
+```bash
+git checkout main
+git pull origin main
+git checkout nama-branch-baru
+git merge main
+```
+
+Jika terjadi konflik:
+- Buka file yang bermasalah di VS Code.
+- Selesaikan konflik.
+- Lalu commit ulang:
+  ```bash
+  git add .
+  git commit -m "Selesaikan konflik merge"
+  ```
+
+---
+
+## 8. Ringkasan Perintah Git
+
+| Kebutuhan                            | Perintah Git |
+|-------------------------------------|---------------|
+| Clone repository                    | `git clone <url>` |
+| Masuk folder proyek                 | `cd Cafebookingbackend` |
+| Cek status perubahan                | `git status` |
+| Tambahkan file ke commit            | `git add .` |
+| Buat commit                         | `git commit -m "pesan"` |
+| Kirim ke GitHub                     | `git push origin <branch>` |
+| Tarik update dari GitHub            | `git pull origin <branch>` |
+| Buat branch baru                    | `git checkout -b <nama-branch>` |
+| Pindah branch                       | `git checkout <nama-branch>` |
+| Gabungkan branch                    | `git merge <nama-branch>` |
+
+---
+
+## 9. Struktur Folder Umum
+
+```
+Cafebookingbackend/
+├── app/
+│   ├── Http/
+│   ├── Models/
+│   └── Providers/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── routes/
+│   └── api.php
+├── .env
+├── composer.json
+└── README.md
+```
+
+---
+
+## Tips Kolaborasi
+- Gunakan nama branch deskriptif seperti `feature/add-payment` atau `bugfix/fix-auth`.  
+- Lakukan **commit kecil & sering** agar mudah dilacak.  
+- Sebelum membuat PR, pastikan kode sudah diuji secara lokal.  
+- Jika mengubah struktur database, selalu tambahkan migrasi baru, jangan ubah migrasi lama.
+
+---
+
+## Author
+**Cutieziaa & Team**  
+📧 [GitHub Profile](https://github.com/cutieziaa)
+
+📅 **Terakhir Diperbarui:** 30 Oktober 2025  
+
+---

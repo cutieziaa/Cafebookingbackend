@@ -89,17 +89,6 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="meja_id" class="form-label">Pilih Meja *</label>
-                            <select class="form-select @error('meja_id') is-invalid @enderror" 
-                                    id="meja_id" name="meja_id" required disabled>
-                                <option value="">Pilih Tipe Meja terlebih dahulu</option>
-                            </select>
-                            @error('meja_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <div class="form-text" id="meja-info"></div>
-                        </div>
 
                         <div class="mb-3">
                             <label for="catatan" class="form-label">Catatan (Opsional)</label>

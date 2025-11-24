@@ -1,28 +1,42 @@
 <?php
-// database/migrations/2024_01_01_000005_create_order_pickup_table.php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderPickupTable extends Migration
+class CreatePickupTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        Schema::create('order_pickup', function (Blueprint $table) {
+        Schema::create('pickup', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengguna_id')->constrained('users')->onDelete('cascade');
-            $table->string('order_code')->unique();
-            $table->decimal('total_amount', 10, 2);
-            $table->decimal('paid_amount', 10, 2)->default(0);
-            $table->enum('payment_status', ['belum_bayar', 'lunas'])->default('belum_bayar');
-            $table->enum('pickup_type', ['dine_in', 'take_away']);
-            $table->enum('order_status', ['baru', 'dikonfirmasi', 'siap_diambil', 'selesai', 'dibatalkan'])->default('baru');
+
+            // pelanggan yang pesan pickup
+            $table->unsignedBigInteger('user_id');
+
+            // nama penerima (opsional jika diambil orang lain)
+            $table->string('nama_penerima')->nullable();
+
+            // catatan pesanan
+            $table->string('catatan')->nullable();
+
+            // status pickup
+            $table->enum('status', [
+                'pending',       // baru pesan
+                'processing',    // sedang dibuat
+                'ready',         // siap diambil
+                'completed',     // sudah diambil
+                'cancelled'
+            ])->default('pending');
+
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('order_pickup');
+        Schema::dropIfExists('pickup');
     }
 }

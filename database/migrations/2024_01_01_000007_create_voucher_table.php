@@ -1,26 +1,30 @@
 <?php
-// database/migrations/2024_01_01_000007_create_voucher_table.php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateVoucherTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('voucher', function (Blueprint $table) {
             $table->id();
-            $table->string('kode', 50)->unique();
-            $table->text('deskripsi');
-            $table->integer('diskon_percent');
-            $table->decimal('minimal_transaksi', 10, 2)->default(0);
-            $table->date('berlaku_mulai');
-            $table->date('berlaku_sampai');
+
+            $table->string('kode')->unique();
+            $table->integer('diskon_persen')->nullable();
+            $table->decimal('diskon_nominal', 10, 2)->nullable();
+
+            $table->decimal('minimum_order', 10, 2)->default(0);
+            $table->integer('limit_penggunaan')->default(1);
+
+            $table->dateTime('expired_at')->nullable();
+
             $table->timestamps();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('voucher');
     }

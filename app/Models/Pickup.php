@@ -4,23 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Booking extends Model
+class Pickup extends Model
 {
-    protected $table = 'booking';
+    protected $table = 'pickup';
 
     protected $fillable = [
-        'user_id', 'meja_id', 'tanggal',
-        'jumlah_orang', 'status'
+        'user_id', 'nama_penerima', 'catatan', 'status'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function meja()
-    {
-        return $this->belongsTo(Meja::class);
     }
 
     public function order()

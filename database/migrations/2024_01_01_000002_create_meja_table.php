@@ -1,20 +1,21 @@
 <?php
-// database/migrations/2024_01_01_000002_create_meja_table.php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateMejaTable extends Migration
 {
     public function up(): void
     {
         Schema::create('meja', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tipe_id')->constrained('meja_tipe')->onDelete('cascade');
-            $table->string('kode_meja', 50)->unique();
-            $table->integer('kapasitas');
-            $table->enum('status', ['aktif', 'tidak_aktif'])->default('aktif');
+            $table->unsignedBigInteger('meja_tipe_id');
+            $table->integer('nomor');
+            $table->boolean('tersedia')->default(true);
             $table->timestamps();
+
+            $table->foreign('meja_tipe_id')->references('id')->on('meja_tipe')->cascadeOnDelete();
         });
     }
 
@@ -22,4 +23,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('meja');
     }
-};
+}

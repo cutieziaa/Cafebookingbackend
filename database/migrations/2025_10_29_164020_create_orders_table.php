@@ -1,18 +1,32 @@
+<?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+class CreateOrdersTable extends Migration
+{
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('menu_id')->constrained('menus')->onDelete('cascade');
-            $table->integer('jumlah');
-            $table->enum('tipe_order', ['pickup', 'dine-in']);
-            $table->enum('status', ['pending', 'diproses', 'selesai'])->default('pending');
+
+            $table->unsignedBigInteger('booking_id')->nullable(); // dine-in
+            $table->unsignedBigInteger('pickup_id')->nullable();  // takeaway
+            $table->unsignedBigInteger('user_id');
+
+            $table->decimal('total', 10, 2)->default(0);
+
+            $table->enum('jenis_order', ['dine_in', 'pickup'])->default('pickup');
+
+            $table->enum('status', ['pending', 'paid', 'cancelled'])
+                  ->default('pending');
+
             $table->timestamps();
+
+            $table->foreign('booking_id')->references('id')->on('booking')->nullOnDelete();
+            $table->foreign('pickup_id')->references('id')->on('pickup')->nullOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 
@@ -20,4 +34,4 @@ return new class extends Migration {
     {
         Schema::dropIfExists('orders');
     }
-};
+}

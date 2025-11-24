@@ -2,39 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Menu;
 use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     public function index()
     {
-        $menus = Menu::all();
-        return view('customer.order', compact('menus'));
+        return Order::with('items')->get();
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'menu_id' => 'required|exists:menus,id',
-            'jumlah' => 'required|integer|min:1',
-            'tipe_order' => 'required|in:pickup,dine-in',
+        $order = Order::create([
+            'user_id' => $request->user()->id,
+            'booking_id' => $request->booking_id,
+            'pickup_id' => $request->pickup_id,
+            'jenis_order' => $request->jenis_order,
+            'total' => $request->total,
         ]);
 
-        Order::create([
-            'user_id' => auth()->id(),
-            'menu_id' => $request->menu_id,
-            'jumlah' => $request->jumlah,
-            'tipe_order' => $request->tipe_order,
-        ]);
+        foreach ($request->items as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'menu_id' => $item['menu_id'],
+                'qty' => $item['qty'],
+                'harga' => $item['harga'],
+            ]);
+        }
 
-        return redirect()->route('order.history')->with('success', 'Pesanan berhasil dibuat!');
+        return $order->load('items');
     }
 
-    public function history()
+    public function myOrders(Request $request)
     {
-        $orders = Order::with('menu')->where('user_id', auth()->id())->latest()->get();
-        return view('customer.order_history', compact('orders'));
+        return Order::where('user_id', $request->user()->id)
+            ->with('items')
+            ->get();
+    }
+
+    public function markAsPaid($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'paid']);
+        return $order;
+    }
+
+    public function cancel($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'cancelled']);
+        return $order;
     }
 }

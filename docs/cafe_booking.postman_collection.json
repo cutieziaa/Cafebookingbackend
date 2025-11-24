@@ -1,0 +1,228 @@
+{
+  "info": {
+    "_postman_id": "cafebooking-api-collection",
+    "name": "Cafe Booking API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Farhan\",\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"08123456789\"\n}"
+            },
+            "url": "{{base_url}}/api/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{base_url}}/api/login"
+          }
+        },
+        {
+          "name": "Profile (Auth Required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "item": [
+        {
+          "name": "Get All Menu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/menu"
+          }
+        },
+        {
+          "name": "Create Menu (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Cappuccino\",\n  \"harga\": 20000,\n  \"deskripsi\": \"Kopi susu enak\",\n  \"tersedia\": true\n}"
+            },
+            "url": "{{base_url}}/api/menu"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Meja",
+      "item": [
+        {
+          "name": "List Meja",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/meja"
+          }
+        },
+        {
+          "name": "Create Meja (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomor\": \"A01\",\n  \"kapasitas\": 4,\n  \"tipe_id\": 1\n}"
+            },
+            "url": "{{base_url}}/api/meja"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Booking",
+      "item": [
+        {
+          "name": "Create Booking (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"meja_id\": 1,\n  \"tanggal\": \"2025-12-01 18:00:00\",\n  \"jumlah_orang\": 4\n}"
+            },
+            "url": "{{base_url}}/api/booking"
+          }
+        },
+        {
+          "name": "Admin - List Booking",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/booking"
+          }
+        },
+        {
+          "name": "Admin - Confirm Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/booking/1/confirm"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Create Order (POS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jenis_order\": \"pickup\",\n  \"total\": 45000,\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2, \"harga\": 15000 },\n    { \"menu_id\": 2, \"qty\": 1, \"harga\": 15000 }\n  ]\n}"
+            },
+            "url": "{{base_url}}/api/order"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pickup",
+      "item": [
+        {
+          "name": "Create Pickup",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_penerima\": \"Farhan\",\n  \"catatan\": \"Tambah saus\"\n}"
+            },
+            "url": "{{base_url}}/api/pickup"
+          }
+        },
+        {
+          "name": "Admin - Update Pickup Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ready\"\n}"
+            },
+            "url": "{{base_url}}/api/pickup/1/status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Voucher",
+      "item": [
+        {
+          "name": "Check Voucher",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/voucher/check/HEMAT50"
+          }
+        },
+        {
+          "name": "Create Voucher (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kode\": \"HEMAT50\",\n  \"diskon\": 50,\n  \"kuota\": 100\n}"
+            },
+            "url": "{{base_url}}/api/voucher"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" }
+  ]
+}

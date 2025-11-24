@@ -17,20 +17,24 @@ class BookingController extends Controller
         $request->validate([
             'meja_id' => 'required',
             'tanggal' => 'required',
-            'jumlah_orang' => 'required'
+            'jumlah_orang' => 'required|integer'
         ]);
 
-        return Booking::create([
+        $booking = Booking::create([
             'user_id' => $request->user()->id,
             'meja_id' => $request->meja_id,
             'tanggal' => $request->tanggal,
             'jumlah_orang' => $request->jumlah_orang,
             'status' => 'pending'
         ]);
+
+        return $booking;
     }
 
     public function myBooking(Request $request)
     {
-        return Booking::where('user_id', $request->user()->id)->get();
+        return Booking::with('meja')
+            ->where('user_id', $request->user()->id)
+            ->get();
     }
 }

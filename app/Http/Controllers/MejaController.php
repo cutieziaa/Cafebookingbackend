@@ -14,6 +14,11 @@ class MejaController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'meja_tipe_id' => 'required',
+            'nomor' => 'required|integer',
+        ]);
+
         return Meja::create($request->all());
     }
 
@@ -27,6 +32,7 @@ class MejaController extends Controller
     public function destroy($id)
     {
         Meja::destroy($id);
-        return response()->json(['message' => 'Deleted']);
+
+        return response()->json(['message' => 'Meja dihapus']);
     }
 }

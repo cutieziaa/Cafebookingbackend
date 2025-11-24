@@ -19,12 +19,12 @@ class MenuController extends Controller
 
     public function store(Request $request)
     {
-        $validate = $request->validate([
+        $request->validate([
             'nama' => 'required',
-            'harga' => 'required',
+            'harga' => 'required|numeric',
         ]);
 
-        return Menu::create($validate);
+        return Menu::create($request->all());
     }
 
     public function update(Request $request, $id)
@@ -37,6 +37,6 @@ class MenuController extends Controller
     public function destroy($id)
     {
         Menu::destroy($id);
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => 'Menu dihapus']);
     }
 }

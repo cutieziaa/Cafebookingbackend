@@ -27,7 +27,8 @@ class VoucherController extends Controller
     public function destroy($id)
     {
         Voucher::destroy($id);
-        return response()->json(['message' => 'Deleted']);
+
+        return response()->json(['message' => 'Voucher dihapus']);
     }
 
     public function check($kode)
@@ -35,7 +36,7 @@ class VoucherController extends Controller
         $voucher = Voucher::where('kode', $kode)->first();
 
         if (!$voucher) {
-            return response()->json(['valid' => false]);
+            return ['valid' => false];
         }
 
         return [

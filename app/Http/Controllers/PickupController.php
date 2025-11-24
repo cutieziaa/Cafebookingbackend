@@ -26,7 +26,10 @@ class PickupController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $pickup = Pickup::findOrFail($id);
-        $pickup->update(['status' => $request->status]);
+        $pickup->update([
+            'status' => $request->status
+        ]);
+
         return $pickup;
     }
 }

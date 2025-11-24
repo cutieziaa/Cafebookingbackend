@@ -10,11 +10,17 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return Order::with('items')->get();
+        return Order::with(['items'])->get();
     }
 
     public function store(Request $request)
     {
+        $request->validate([
+            'jenis_order' => 'required',
+            'total' => 'required|numeric',
+            'items' => 'required|array'
+        ]);
+
         $order = Order::create([
             'user_id' => $request->user()->id,
             'booking_id' => $request->booking_id,

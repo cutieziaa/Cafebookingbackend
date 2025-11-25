@@ -43,7 +43,7 @@ return [
                 /*
                  * Absolute paths to directory containing the swagger annotations are stored.
                  */
-                'annotations' => [],
+                'annotations' => ['app/Swagger'],
             ],
         ],
     ],

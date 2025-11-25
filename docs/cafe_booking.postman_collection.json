@@ -77,32 +77,75 @@
         }
       ]
     },
+{
+  "name": "Meja API",
+  "item": [
     {
-      "name": "Meja",
-      "item": [
-        {
-          "name": "List Meja",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/api/meja"
-          }
-        },
-        {
-          "name": "Create Meja (Admin)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomor\": \"A01\",\n  \"kapasitas\": 4,\n  \"tipe_id\": 1\n}"
-            },
-            "url": "{{base_url}}/api/meja"
-          }
+      "name": "List Meja",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/meja",
+          "host": ["{{base_url}}"],
+          "path": ["api", "meja"]
         }
-      ]
+      }
     },
+    {
+      "name": "Create Meja (Admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"meja_tipe_id\": 1,\n  \"nomor\": \"A01\",\n  \"tersedia\": true\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/meja",
+          "host": ["{{base_url}}"],
+          "path": ["api", "meja"]
+        }
+      }
+    },
+    {
+      "name": "Update Meja (Admin)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nomor\": \"A02\",\n  \"tersedia\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/meja/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "meja", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Meja (Admin)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/meja/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "meja", "1"]
+        }
+      }
+    }
+  ]
+},
     {
       "name": "Booking",
       "item": [

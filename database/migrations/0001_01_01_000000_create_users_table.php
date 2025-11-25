@@ -14,9 +14,8 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('phone')->unique();
 
-            // nomor hp (baru)
-            $table->string('phone', 20)->nullable()->unique();
 
             // ROLE: admin atau customer
             $table->enum('role', ['admin', 'customer'])->default('customer');

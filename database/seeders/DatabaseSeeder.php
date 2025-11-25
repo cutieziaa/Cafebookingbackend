@@ -22,15 +22,6 @@ class DatabaseSeeder extends Seeder
             'nomor_wa' => '081234567890'
         ]);
 
-        // CS User
-        User::create([
-            'nama' => 'Customer Service',
-            'email' => 'cs@cafe.com',
-            'password' => Hash::make('password'), // Pastikan menggunakan Hash::make
-            'peran' => 'cs',
-            'nomor_wa' => '081234567891'
-        ]);
-
         // Customer contoh
         User::create([
             'nama' => 'John Customer',

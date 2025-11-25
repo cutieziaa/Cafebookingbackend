@@ -10,12 +10,19 @@ class CreateMejaTable extends Migration
     {
         Schema::create('meja', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('meja_tipe_id');
-            $table->integer('nomor');
-            $table->boolean('tersedia')->default(true);
-            $table->timestamps();
 
-            $table->foreign('meja_tipe_id')->references('id')->on('meja_tipe')->cascadeOnDelete();
+            // relasi tipe meja
+            $table->foreignId('meja_tipe_id')
+                  ->constrained('meja_tipe')
+                  ->cascadeOnDelete();
+
+            // FORMAT NOMOR MEJA: A01, B12, C07
+            $table->string('nomor', 10);
+
+            // apakah meja sedang tersedia
+            $table->boolean('tersedia')->default(true);
+
+            $table->timestamps();
         });
     }
 

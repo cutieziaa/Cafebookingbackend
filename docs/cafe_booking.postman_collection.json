@@ -102,7 +102,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"meja_tipe_id\": 1,\n  \"nomor\": \"A01\",\n  \"tersedia\": true\n}"
+          "raw": "{\n  \"meja_tipe_id\": 1,\n  \"nomor\": \"A01\"\n}"
         },
         "url": {
           "raw": "{{base_url}}/api/meja",

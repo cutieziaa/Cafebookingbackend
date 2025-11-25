@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MejaTipeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/menu', [MenuController::class, 'store']);
         Route::put('/menu/{id}', [MenuController::class, 'update']);
         Route::delete('/menu/{id}', [MenuController::class, 'destroy']);
+    });
+
+
+    Route::middleware('admin')->group(function () {
+        Route::get('/meja-tipe', [MejaTipeController::class, 'index']);
+        Route::post('/meja-tipe', [MejaTipeController::class, 'store']);
     });
 
 

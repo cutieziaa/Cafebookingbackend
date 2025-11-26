@@ -15,55 +15,59 @@ class PickupController extends Controller
         $request->validate([
             'nama_penerima' => 'required|string',
             'catatan' => 'nullable|string',
-            'items' => 'required|array',
-            'items.*.menu_id' => 'required|integer|exists:menu,id',
+            'items' => 'required|array|min:1',
+            'items.*.menu_id' => 'required|exists:menu,id',
             'items.*.qty' => 'required|integer|min:1'
         ]);
 
-        // === 1. Buat pickup === //
-        $pickup = Pickup::create([
-            'user_id' => $request->user()->id,
-            'nama_penerima' => $request->nama_penerima,
-            'catatan' => $request->catatan,
-            'status' => 'pending'
-        ]);
-
-        // === 2. Buat order === //
+        // === 1. Buat ORDER dulu === //
         $order = Order::create([
             'user_id' => $request->user()->id,
-            'pickup_id' => $pickup->id,
             'jenis_order' => 'pickup',
-            'total' => 0, // nanti dihitung ulang
+            'pickup_id' => null,    // di-update setelah pickup dibuat
+            'total' => 0,
             'status' => 'pending'
         ]);
 
         $total = 0;
 
-        // === 3. Loop semua menu yang dipesan === //
-        foreach ($request->items as $item) {
-            $menu = Menu::find($item['menu_id']);
-            $harga = $menu->harga;
-            $subtotal = $harga * $item['qty'];
+        // === 2. Simpan semua Items === //
+        foreach ($request->items as $i) {
+            $menu = Menu::find($i['menu_id']);
+            $subtotal = $menu->harga * $i['qty'];
 
-            // simpan item pesanan
             OrderItem::create([
                 'order_id' => $order->id,
-                'menu_id' => $item['menu_id'],
-                'qty' => $item['qty'],
-                'harga' => $harga
+                'menu_id'  => $menu->id,
+                'qty'      => $i['qty'],
+                'harga'    => $menu->harga
             ]);
 
             $total += $subtotal;
         }
 
-        // === 4. Update total harga === //
+        // Update total order
         $order->update(['total' => $total]);
+
+
+        // === 3. Buat Pickup dan hubungkan dengan order === //
+        $pickup = Pickup::create([
+            'user_id'        => $request->user()->id,
+            'order_id'       => $order->id,     // PENTING!
+            'nama_penerima'  => $request->nama_penerima,
+            'catatan'        => $request->catatan,
+            'status'         => 'pending'
+        ]);
+
+        // hubungkan kembali ke order
+        $order->update(['pickup_id' => $pickup->id]);
+
 
         return response()->json([
             'message' => 'Pickup order created successfully',
-            'pickup' => $pickup,
-            'order' => [
-                'id' => $order->id,
+            'pickup'  => $pickup,
+            'order'   => [
+                'id'    => $order->id,
                 'total' => $order->total,
                 'items' => $order->items
             ]

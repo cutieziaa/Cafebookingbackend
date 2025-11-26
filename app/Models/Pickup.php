@@ -9,16 +9,22 @@ class Pickup extends Model
     protected $table = 'pickup';
 
     protected $fillable = [
-        'user_id', 'nama_penerima', 'catatan', 'status'
+        'user_id',
+        'order_id',
+        'nama_penerima',
+        'catatan',
+        'status'
     ];
 
+    // relasi ke user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    // relasi ke order (pickup belongsTo order)
     public function order()
     {
-        return $this->hasOne(Order::class);
+        return $this->belongsTo(Order::class);
     }
 }

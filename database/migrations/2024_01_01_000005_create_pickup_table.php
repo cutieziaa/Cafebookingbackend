@@ -14,8 +14,8 @@ return new class extends Migration
             // siapa yang pesan
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 
-            // menu yang dipesan (optional, jika kamu support pre-order 1 menu saja)
-            $table->foreignId('menu_id')->nullable()->constrained('menu')->nullOnDelete();
+            // menghubungkan pickup ke order
+            $table->foreignId('order_id')->nullable()->constrained('orders')->nullOnDelete();
 
             $table->string('nama_penerima')->nullable();
             $table->string('catatan')->nullable();

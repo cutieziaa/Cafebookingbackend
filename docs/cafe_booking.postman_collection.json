@@ -5,66 +5,65 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
+
     {
-  "name": "Auth",
-  "item": [
-    {
-      "name": "Register",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Accept", "value": "application/json" },
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"Farhan\",\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"08123456789\"\n}"
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Farhan\",\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"08123456789\"\n}"
+            },
+            "url": "{{base_url}}/api/register"
+          }
         },
-        "url": "{{base_url}}/api/register"
-      }
-    },
-
-    {
-      "name": "Login",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Accept", "value": "application/json" },
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\"\n}"
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{base_url}}/api/login"
+          }
         },
-        "url": "{{base_url}}/api/login"
-      }
+        {
+          "name": "Profile (Auth Required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/profile"
+          }
+        },
+        {
+          "name": "Logout (Auth Required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{base_url}}/api/logout"
+          }
+        }
+      ]
     },
 
-    {
-      "name": "Profile (Auth Required)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}" },
-          { "key": "Accept", "value": "application/json" }
-        ],
-        "url": "{{base_url}}/api/profile"
-      }
-    },
-
-    {
-      "name": "Logout (Auth Required)",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}" },
-          { "key": "Accept", "value": "application/json" }
-        ],
-        "url": "{{base_url}}/api/logout"
-      }
-    }
-  ]
-},
     {
       "name": "Meja Tipe",
       "item": [
@@ -95,6 +94,7 @@
         }
       ]
     },
+
     {
       "name": "Menu",
       "item": [
@@ -102,7 +102,6 @@
           "name": "Get All Menu",
           "request": {
             "method": "GET",
-            "header": [],
             "url": "{{base_url}}/api/menu"
           }
         },
@@ -123,75 +122,60 @@
         }
       ]
     },
-{
-  "name": "Meja API",
-  "item": [
+
     {
-      "name": "List Meja",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{base_url}}/api/meja",
-          "host": ["{{base_url}}"],
-          "path": ["api", "meja"]
-        }
-      }
-    },
-    {
-      "name": "Create Meja (Admin)",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"meja_tipe_id\": 1,\n  \"nomor\": \"A01\"\n}"
+      "name": "Meja API",
+      "item": [
+        {
+          "name": "List Meja",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/meja"
+          }
         },
-        "url": {
-          "raw": "{{base_url}}/api/meja",
-          "host": ["{{base_url}}"],
-          "path": ["api", "meja"]
-        }
-      }
-    },
-    {
-      "name": "Update Meja (Admin)",
-      "request": {
-        "method": "PUT",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"nomor\": \"A02\",\n  \"tersedia\": false\n}"
+        {
+          "name": "Create Meja (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"meja_tipe_id\": 1,\n  \"nomor\": \"A01\"\n}"
+            },
+            "url": "{{base_url}}/api/meja"
+          }
         },
-        "url": {
-          "raw": "{{base_url}}/api/meja/1",
-          "host": ["{{base_url}}"],
-          "path": ["api", "meja", "1"]
+        {
+          "name": "Update Meja (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomor\": \"A02\",\n  \"tersedia\": false\n}"
+            },
+            "url": "{{base_url}}/api/meja/1"
+          }
+        },
+        {
+          "name": "Delete Meja (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/meja/1"
+          }
         }
-      }
+      ]
     },
-    {
-      "name": "Delete Meja (Admin)",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": {
-          "raw": "{{base_url}}/api/meja/1",
-          "host": ["{{base_url}}"],
-          "path": ["api", "meja", "1"]
-        }
-      }
-    }
-  ]
-},
+
     {
       "name": "Booking",
       "item": [
@@ -231,6 +215,7 @@
         }
       ]
     },
+
     {
       "name": "Order",
       "item": [
@@ -250,6 +235,7 @@
         }
       ]
     },
+
     {
       "name": "Pickup",
       "item": [
@@ -267,7 +253,7 @@
             },
             "url": "{{base_url}}/api/pickup"
           }
-        },  
+        },
         {
           "name": "Admin - Update Pickup Status",
           "request": {
@@ -284,6 +270,7 @@
         }
       ]
     },
+
     {
       "name": "Voucher",
       "item": [

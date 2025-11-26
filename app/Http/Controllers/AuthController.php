@@ -20,17 +20,21 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $validate['password'] = Hash::make($request->password);
-        $validate['role'] = 'customer'; // default role
-
-        $user = User::create($validate);
+        $user = User::create([
+            'name'     => $validate['name'],
+            'email'    => $validate['email'],
+            'phone'    => $validate['phone'] ?? null,
+            'password' => Hash::make($validate['password']),
+            'role'     => 'customer', // default user role
+        ]);
 
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'message' => 'Register berhasil',
-            'user' => $user
+            'user'    => $user
         ], 201);
     }
+
 
 
     // =============================
@@ -43,50 +47,51 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validate['email'])->first();
 
-        // cek email/password benar?
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($validate['password'], $user->password)) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Email atau password salah'
             ], 401);
         }
 
-        // buat token Sanctum
+        // Generate token
         $token = $user->createToken("auth_token")->plainTextToken;
 
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'message' => 'Login berhasil',
-            'token' => $token,
-            'user' => $user
+            'token'   => $token,
+            'user'    => $user
         ]);
     }
 
 
+
     // =============================
-    // PROFILE
+    // PROFILE (Requires Auth)
     // =============================
     public function profile(Request $request)
     {
         return response()->json([
             'status' => 'success',
-            'user' => $request->user()
+            'user'   => $request->user()
         ]);
     }
 
 
+
     // =============================
-    // LOGOUT
+    // LOGOUT (Best Practice)
     // =============================
     public function logout(Request $request)
     {
-        // hapus semua token user
-        $request->user()->tokens()->delete();
+        // Menghapus token yg sedang digunakan
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'message' => 'Logout berhasil'
         ]);
     }

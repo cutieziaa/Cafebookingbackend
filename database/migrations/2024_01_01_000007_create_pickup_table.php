@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::create('pickup', function (Blueprint $table) {
             $table->id();
 
-            // siapa yang pesan
+            // user yang memesan
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 
-            // menghubungkan pickup ke order
+            // pickup milik order mana
             $table->foreignId('order_id')->nullable()->constrained('orders')->nullOnDelete();
 
             $table->string('nama_penerima')->nullable();

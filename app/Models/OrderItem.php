@@ -9,7 +9,10 @@ class OrderItem extends Model
     protected $table = 'order_item';
 
     protected $fillable = [
-        'order_id', 'menu_id', 'qty', 'harga'
+        'order_id',
+        'menu_id',
+        'qty',
+        'harga'
     ];
 
     public function order()

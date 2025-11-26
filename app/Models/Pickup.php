@@ -16,13 +16,11 @@ class Pickup extends Model
         'status'
     ];
 
-    // relasi ke user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // relasi ke order (pickup belongsTo order)
     public function order()
     {
         return $this->belongsTo(Order::class);

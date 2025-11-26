@@ -14,13 +14,10 @@ return new class extends Migration
             // dine in
             $table->foreignId('booking_id')->nullable()->constrained('booking')->nullOnDelete();
 
-            // pickup
-            $table->foreignId('pickup_id')->nullable()->constrained('pickup')->nullOnDelete();
-
             // user
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 
-            // data pembayaran
+            // total pembayaran
             $table->decimal('total', 10, 2)->default(0);
 
             $table->enum('jenis_order', ['dine_in', 'pickup'])->default('pickup');

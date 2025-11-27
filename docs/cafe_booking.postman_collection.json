@@ -229,7 +229,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"jenis_order\": \"pickup\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2, \"harga\": 15000 },\n    { \"menu_id\": 2, \"qty\": 1, \"harga\": 15000 }\n  ]\n}"
+              "raw": "{\n  \"jenis_order\": \"pickup\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2, },\n "
             },
             "url": "{{base_url}}/api/order"
           }
@@ -250,7 +250,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nama_penerima\": \"Farhan\",\n  \"catatan\": \"tanpa gula\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2 },\n    { \"menu_id\": 3, \"qty\": 1 }\n  ]\n}"
+              "raw": "{\n  \"nama_penerima\": \"Farhan\",\n  \"catatan\": \"tanpa gula\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2 },"
             },
             "url": "{{base_url}}/api/pickup"
           }

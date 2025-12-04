@@ -1,0 +1,30 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Cafe Booking API (Dummy Annotation Needed)",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/_dummy": {
+            "get": {
+                "tags": [
+                    "Dummy"
+                ],
+                "summary": "Dummy endpoint untuk memenuhi requirement Swagger",
+                "description": "Tidak digunakan, hanya agar Swagger-PHP tidak error",
+                "operationId": "e4456bef4bae2a649389b41d3923afcf",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Dummy",
+            "description": "Dummy"
+        }
+    ]
+}

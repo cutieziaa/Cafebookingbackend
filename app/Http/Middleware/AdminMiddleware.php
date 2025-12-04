@@ -1,22 +1,22 @@
 <?php
-// app/Http/Middleware/AdminMiddleware.php
+
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->peran === 'admin') {
-            return $next($request);
+        $user = $request->user();
+
+        if (!$user || $user->role !== 'admin') {
+            return response()->json([
+                'message' => 'Unauthorized. Admin only.'
+            ], 403);
         }
 
-        return redirect('/dashboard')->with('error', 'Akses ditolak. Halaman untuk Admin.');
+        return $next($request);
     }
 }

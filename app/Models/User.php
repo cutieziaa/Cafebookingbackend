@@ -1,72 +1,32 @@
 <?php
-// app/Models/User.php
+
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens;
 
     protected $fillable = [
-        'nama',
-        'email', 
-        'password',
-        'peran',
-        'nomor_wa'
+        'name', 'email', 'password', 'phone', 'role'
     ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password'];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
-    // Scope untuk peran
-    public function scopeCustomer($query)
-    {
-        return $query->where('peran', 'customer');
-    }
-
-    public function scopeAdmin($query)
-    {
-        return $query->where('peran', 'admin');
-    }
-
-    public function scopeCs($query)
-    {
-        return $query->where('peran', 'cs');
-    }
-
-    // Relasi
     public function bookings()
     {
-        return $this->hasMany(Booking::class, 'pengguna_id');
+        return $this->hasMany(Booking::class);
     }
 
-    // Check peran
-    public function isAdmin()
+    public function pickups()
     {
-        return $this->peran === 'admin';
+        return $this->hasMany(Pickup::class);
     }
 
-    public function isCs()
+    public function orders()
     {
-        return $this->peran === 'cs';
-    }
-
-    public function isCustomer()
-    {
-        return $this->peran === 'customer';
+        return $this->hasMany(Order::class);
     }
 }

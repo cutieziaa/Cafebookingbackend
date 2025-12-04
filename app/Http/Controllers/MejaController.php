@@ -1,79 +1,73 @@
 <?php
-// app/Http/Controllers/MejaController.php
+
 namespace App\Http\Controllers;
 
 use App\Models\Meja;
-use App\Models\MejaTipe;
 use Illuminate\Http\Request;
 
 class MejaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('cs'); // Hanya CS dan Admin yang bisa kelola meja
-    }
-
+    // GET /meja
     public function index()
     {
-        $mejas = Meja::with('tipe')->get();
-        $tipeMejas = MejaTipe::all();
-        return view('meja.index', compact('mejas', 'tipeMejas'));
+        $data = Meja::with('tipe')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
     }
 
-    public function create()
-    {
-        $tipeMejas = MejaTipe::all();
-        return view('meja.create', compact('tipeMejas'));
-    }
-
+    // POST /meja
     public function store(Request $request)
     {
-        $request->validate([
-            'tipe_id' => 'required|exists:meja_tipe,id',
-            'kode_meja' => 'required|string|max:50|unique:meja',
-            'kapasitas' => 'required|integer|min:1',
-            'status' => 'required|in:aktif,tidak_aktif'
+        $validated = $request->validate([
+            'meja_tipe_id' => 'required|exists:meja_tipe,id',
+            'nomor'        => ['required', 'string', 'max:10', 'regex:/^[A-Z][0-9]{2}$/'], 
         ]);
 
-        Meja::create($request->all());
-
-        return redirect()->route('meja.index')
-            ->with('success', 'Meja berhasil ditambahkan.');
-    }
-
-    public function show(Meja $meja)
-    {
-        $meja->load('tipe');
-        return view('meja.show', compact('meja'));
-    }
-
-    public function edit(Meja $meja)
-    {
-        $tipeMejas = MejaTipe::all();
-        return view('meja.edit', compact('meja', 'tipeMejas'));
-    }
-
-    public function update(Request $request, Meja $meja)
-    {
-        $request->validate([
-            'tipe_id' => 'required|exists:meja_tipe,id',
-            'kode_meja' => 'required|string|max:50|unique:meja,kode_meja,' . $meja->id,
-            'kapasitas' => 'required|integer|min:1',
-            'status' => 'required|in:aktif,tidak_aktif'
+        $meja = Meja::create([
+            'meja_tipe_id' => $validated['meja_tipe_id'],
+            'nomor'        => $validated['nomor'],
+            'tersedia'     => true,
         ]);
 
-        $meja->update($request->all());
-
-        return redirect()->route('meja.index')
-            ->with('success', 'Meja berhasil diperbarui.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Meja berhasil dibuat',
+            'data' => $meja
+        ], 201);
     }
 
-    public function destroy(Meja $meja)
+    // PUT /meja/{id}
+    public function update(Request $request, $id)
     {
+        $meja = Meja::findOrFail($id);
+
+        $validated = $request->validate([
+            'meja_tipe_id' => 'sometimes|exists:meja_tipe,id',
+            'nomor'        => ['sometimes', 'string', 'max:10', 'regex:/^[A-Z][0-9]{2}$/'],
+            'tersedia'     => 'sometimes|boolean',
+        ]);
+
+        $meja->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Meja berhasil diperbarui',
+            'data' => $meja
+        ]);
+    }
+
+    // DELETE /meja/{id}
+    public function destroy($id)
+    {
+        $meja = Meja::findOrFail($id);
         $meja->delete();
 
-        return redirect()->route('meja.index')
-            ->with('success', 'Meja berhasil dihapus.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Meja berhasil dihapus'
+        ]);
     }
 }

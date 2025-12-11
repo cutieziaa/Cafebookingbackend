@@ -82,7 +82,7 @@ class DatabaseSeeder extends Seeder
             ['nama' => 'Latte', 'harga' => 28000, 'deskripsi' => 'Latte dengan art pada foam'],
             ['nama' => 'Croissant', 'harga' => 18000, 'deskripsi' => 'Croissant butter asli'],
             ['nama' => 'Sandwich', 'harga' => 32000, 'deskripsi' => 'Sandwich dengan daging asap'],
-        ];
+        ];  
 
         foreach ($menus as $menu) {
             Menu::create($menu);

@@ -4,49 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log; // Tambahkan ini
-use Illuminate\Validation\ValidationException; // Tambahkan ini
 
 class BookingController extends Controller
 {
-    // ... method lainnya ...
+    public function index()
+    {
+        return Booking::with(['user', 'meja'])->get();
+    }
 
     public function store(Request $request)
     {
-        // --- LOG DEBUG 1: Lihat semua data yang diterima ---
-        Log::info('Data request yang diterima:', $request->all());
-        Log::info('Header Content-Type: ' . $request->header('Content-Type'));
-        // ----------------------------------------------------
-
-        // --- LOG DEBUG 2: Jalankan validasi dan tangkap errornya ---
-        $validator = \Validator::make($request->all(), [
+        // 1. Perbarui validasi untuk menambahkan 'waktu_selesai'
+        $request->validate([
             'meja_id' => 'required|exists:meja,id',
             'tanggal' => 'required|date|after_or_equal:now',
-            'waktu_selesai' => 'required|date|after:tanggal',
+            'waktu_selesai' => 'required|date|after:tanggal', // Waktu selesai harus setelah waktu mulai
             'jumlah_orang' => 'required|integer|min:1'
         ]);
 
-        if ($validator->fails()) {
-            Log::error('Validasi gagal: ' . $validator->errors()->first());
-            // Kembalikan error validasi agar bisa dilihat di Postman
-            return response()->json(['message' => 'Validasi gagal', 'errors' => $validator->errors()], 422);
-        }
-        // ---------------------------------------------------------
-
-        // Jika sampai sini, berarti validasi lolos
-        Log::info('Validasi berhasil, mencoba menyimpan booking...');
-
+        // 2. Tambahkan 'waktu_selesai' saat membuat booking
         $booking = Booking::create([
             'user_id' => $request->user()->id,
             'meja_id' => $request->meja_id,
             'tanggal' => $request->tanggal,
-            'waktu_selesai' => $request->waktu_selesai,
+            'waktu_selesai' => $request->waktu_selesai, // <-- TAMBAHKAN INI
             'jumlah_orang' => $request->jumlah_orang,
             'status' => 'pending'
         ]);
 
-        Log::info('Booking berhasil dibuat dengan ID: ' . $booking->id);
-
         return response()->json($booking, 201);
     }
+
+    public function myBooking(Request $request)
+    {
+        return Booking::with('meja')
+            ->where('user_id', $request->user()->id)
+            ->get();
+    }
+
+    
 }

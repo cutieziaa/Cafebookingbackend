@@ -1,11 +1,10 @@
 {
   "info": {
-    "_postman_id": "cafebooking-api-collection",
-    "name": "Cafe Booking API",
+    "_postman_id": "cafebooking-api-collection-v2",
+    "name": "Cafe Booking API v2 (With Voucher & Durasi)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
-
     {
       "name": "Auth",
       "item": [
@@ -19,13 +18,28 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Farhan\",\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"08123456789\"\n}"
+              "raw": "{\n  \"name\": \"Customer Baru\",\n  \"email\": \"customerbaru@example.com\",\n  \"password\": \"password\",\n  \"phone\": \"08123456789\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": "{{base_url}}/api/register"
           }
         },
         {
-          "name": "Login",
+          "name": "Login (Get Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('token', responseJson.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -34,7 +48,8 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"farhan@example.com\",\n  \"password\": \"123456\"\n}"
+              "raw": "{\n  \"email\": \"budi@example.com\",\n  \"password\": \"password\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": "{{base_url}}/api/login"
           }
@@ -63,119 +78,6 @@
         }
       ]
     },
-
-    {
-      "name": "Meja Tipe",
-      "item": [
-        {
-          "name": "List Meja Tipe (Admin)",
-          "request": {
-            "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": "{{base_url}}/api/meja-tipe"
-          }
-        },
-        {
-          "name": "Create Meja Tipe (Admin)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nama\": \"VIP\"\n}"
-            },
-            "url": "{{base_url}}/api/meja-tipe"
-          }
-        }
-      ]
-    },
-
-    {
-      "name": "Menu",
-      "item": [
-        {
-          "name": "Get All Menu",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/api/menu"
-          }
-        },
-        {
-          "name": "Create Menu (Admin)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nama\": \"Cappuccino\",\n  \"harga\": 20000,\n  \"deskripsi\": \"Kopi susu enak\",\n  \"tersedia\": true\n}"
-            },
-            "url": "{{base_url}}/api/menu"
-          }
-        }
-      ]
-    },
-
-    {
-      "name": "Meja API",
-      "item": [
-        {
-          "name": "List Meja",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/api/meja"
-          }
-        },
-        {
-          "name": "Create Meja (Admin)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"meja_tipe_id\": 1,\n  \"nomor\": \"A01\"\n}"
-            },
-            "url": "{{base_url}}/api/meja"
-          }
-        },
-        {
-          "name": "Update Meja (Admin)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomor\": \"A02\",\n  \"tersedia\": false\n}"
-            },
-            "url": "{{base_url}}/api/meja/1"
-          }
-        },
-        {
-          "name": "Delete Meja (Admin)",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": "{{base_url}}/api/meja/1"
-          }
-        }
-      ]
-    },
-
     {
       "name": "Booking",
       "item": [
@@ -184,17 +86,29 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"meja_id\": 1,\n  \"tanggal\": \"2025-12-01 18:00:00\",\n  \"jumlah_orang\": 4\n}"
+              "raw": "{\n  \"meja_id\": 3,\n  \"tanggal\": \"2024-12-25T19:00:00.000Z\",\n  \"waktu_selesai\": \"2024-12-25T21:00:00.000Z\",\n  \"jumlah_orang\": 4\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": "{{base_url}}/api/booking"
           }
         },
         {
-          "name": "Admin - List Booking",
+          "name": "My Bookings (Customer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/booking/me"
+          }
+        },
+        {
+          "name": "Admin - List All Bookings",
           "request": {
             "method": "GET",
             "header": [
@@ -215,9 +129,8 @@
         }
       ]
     },
-
     {
-      "name": "Order",
+      "name": "Order & Pickup",
       "item": [
         {
           "name": "Create Order (POS) with Voucher",
@@ -229,28 +142,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"jenis_order\": \"pickup\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2 },\n    { \"menu_id\": 3, \"qty\": 1 }\n  ],\n  \"voucher_code\": \"DISKONSPESIAL\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n  \"jenis_order\": \"pickup\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2 },\n    { \"menu_id\": 3, \"qty\": 1 }\n  ],\n  \"voucher_code\": \"DISKON25K\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
-            "url": {
-              "raw": "{{base_url}}/api/order",
-              "host": ["{{base_url}}"],
-              "path": ["api", "order"]
-            }
+            "url": "{{base_url}}/api/order"
           }
-        }
-      ]
-    },
-
-    {
-      "name": "Pickup",
-      "item": [
+        },
         {
-          "name": "Create Pickup",
+          "name": "Create Pickup (with Voucher)",
           "request": {
             "method": "POST",
             "header": [
@@ -259,13 +158,24 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nama_penerima\": \"Farhan\",\n  \"catatan\": \"tanpa gula\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2 },"
+              "raw": "{\n  \"nama_penerima\": \"Budi Santoso\",\n  \"catatan\": \"Jangan pakai sambal ya, terima kasih.\",\n  \"items\": [\n    { \"menu_id\": 2, \"qty\": 1 },\n    { \"menu_id\": 4, \"qty\": 3 }\n  ],\n  \"voucher_code\": \"PROMO15\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": "{{base_url}}/api/pickup"
           }
         },
         {
-          "name": "My Pickup",
+          "name": "My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/api/order/me"
+          }
+        },
+        {
+          "name": "My Pickups",
           "request": {
             "method": "GET",
             "header": [
@@ -279,18 +189,19 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"ready\"\n}"
+              "raw": "{\n  \"status\": \"ready\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": "{{base_url}}/api/pickup/1/status"
           }
         }
       ]
     },
-
     {
       "name": "Voucher",
       "item": [
@@ -298,7 +209,7 @@
           "name": "Check Voucher",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/api/voucher/check/HEMAT50"
+            "url": "{{base_url}}/api/voucher/check/PROMO15"
           }
         },
         {
@@ -311,9 +222,84 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"kode\": \"HEMAT50\",\n  \"diskon\": 50,\n  \"kuota\": 100\n}"
+              "raw": "{\n  \"kode\": \"PROMO_LIBURAN\",\n  \"diskon_persen\": 25,\n  \"diskon_nominal\": null,\n  \"minimum_order\": 75000,\n  \"limit_penggunaan\": 150,\n  \"expired_at\": \"2024-12-31 23:59:59\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": "{{base_url}}/api/voucher"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "item": [
+        {
+          "name": "Get All Menu",
+          "request": { "method": "GET", "url": "{{base_url}}/api/menu" }
+        },
+        {
+          "name": "Create Menu (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Es Teh Manis\",\n  \"harga\": 5000,\n  \"deskripsi\": \"Teh manis dingin\",\n  \"tersedia\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/api/menu"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Meja & Tipe",
+      "item": [
+        {
+          "name": "List Meja Tipe",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/api/meja-tipe"
+          }
+        },
+        {
+          "name": "Create Meja Tipe (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Meja Outdoor\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/api/meja-tipe"
+          }
+        },
+        {
+          "name": "List Meja",
+          "request": { "method": "GET", "url": "{{base_url}}/api/meja" }
+        },
+        {
+          "name": "Create Meja (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"meja_tipe_id\": 1,\n  \"nomor\": \"OUT-01\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/api/meja"
           }
         }
       ]

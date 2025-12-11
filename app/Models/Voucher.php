@@ -12,4 +12,10 @@ class Voucher extends Model
         'kode', 'diskon_persen', 'diskon_nominal',
         'minimum_order', 'limit_penggunaan', 'expired_at'
     ];
+
+    // Tambahkan relasi ke Order
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

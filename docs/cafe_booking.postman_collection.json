@@ -220,7 +220,7 @@
       "name": "Order",
       "item": [
         {
-          "name": "Create Order (POS)",
+          "name": "Create Order (POS) with Voucher",
           "request": {
             "method": "POST",
             "header": [
@@ -229,9 +229,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"jenis_order\": \"pickup\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2, },\n "
+              "raw": "{\n  \"jenis_order\": \"pickup\",\n  \"items\": [\n    { \"menu_id\": 1, \"qty\": 2 },\n    { \"menu_id\": 3, \"qty\": 1 }\n  ],\n  \"voucher_code\": \"DISKONSPESIAL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
-            "url": "{{base_url}}/api/order"
+            "url": {
+              "raw": "{{base_url}}/api/order",
+              "host": ["{{base_url}}"],
+              "path": ["api", "order"]
+            }
           }
         }
       ]

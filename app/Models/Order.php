@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    // Tambahkan 'voucher_id' dan 'discount_amount' ke fillable
     protected $fillable = [
         'booking_id',
         'user_id',
         'total',
         'jenis_order',
-        'status'
+        'status',
+        'voucher_id', // Tambahkan ini
+        'discount_amount' // Tambahkan ini
     ];
 
     public function items()
@@ -33,5 +36,11 @@ class Order extends Model
     public function pickup()
     {
         return $this->hasOne(Pickup::class);
+    }
+
+    // Tambahkan relasi ke Voucher
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
     }
 }

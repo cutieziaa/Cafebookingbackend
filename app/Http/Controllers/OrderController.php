@@ -136,4 +136,27 @@ class OrderController extends Controller
         $order->update(['status' => 'cancelled']);
         return $order;
     }
+
+    public function uploadPaymentProof(Request $request)
+    {
+    $request->validate([
+        'order_id' => 'required|exists:orders,id',
+        'bukti_bayar' => 'required|image|max:2048'
+    ]);
+
+    $order = Order::findOrFail($request->order_id);
+    
+    // Simpan gambar
+    $path = $request->file('bukti_bayar')->store('payment-proofs', 'public');
+    
+    $order->update([
+        'bukti_bayar' => $path,
+        'status' => 'waiting_verification'
+    ]);
+
+    return response()->json([
+        'message' => 'Payment proof uploaded successfully',
+        'order' => $order
+    ]);
+    }
 }

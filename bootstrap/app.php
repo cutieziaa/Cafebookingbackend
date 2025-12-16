@@ -10,16 +10,19 @@ return Application::configure()
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
     )
-
     ->withMiddleware(function (Middleware $middleware) {
-        // Tambahkan alias middleware admin DI SINI
+        // --- TAMBAHKAN BAGIAN INI ---
+        // Daftarkan middleware CORS manual ke grup 'api'
+        $middleware->group('api', [
+            \App\Http\Middleware\HandleCors::class,
+        ]);
+        // --- AKHIR BAGIAN YANG DITAMBAHKAN ---
+
         $middleware->alias([
             'admin' => App\Http\Middleware\AdminMiddleware::class,
         ]);
     })
-
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })
-
     ->create();

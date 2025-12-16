@@ -3,26 +3,40 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Booking extends Model
 {
     protected $table = 'booking';
 
-    // 1. Tambahkan 'waktu_selesai' ke fillable
     protected $fillable = [
         'user_id', 
         'meja_id', 
+        'kode_booking', // Tambahkan ini
         'tanggal',
-        'waktu_selesai', // <-- TAMBAHKAN INI
+        'waktu_selesai',
         'jumlah_orang', 
-        'status'
+        'status',
+        'catatan' // Tambahkan ini
     ];
 
-    // Opsional: Cast agar tanggal otomatis menjadi instance Carbon
     protected $casts = [
         'tanggal' => 'datetime',
         'waktu_selesai' => 'datetime',
     ];
+
+    // Boot method untuk membuat kode booking otomatis
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Buat kode booking saat membuat booking baru
+        static::creating(function ($booking) {
+            if (empty($booking->kode_booking)) {
+                $booking->kode_booking = 'BKJ-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+            }
+        });
+    }
 
     public function user()
     {
@@ -39,20 +53,12 @@ class Booking extends Model
         return $this->hasOne(Order::class);
     }
 
-    /**
-     * 2. Accessor untuk menghitung durasi booking dalam jam.
-     * Atribut virtual ini bisa diakses dengan $booking->durasi_jam
-     *
-     * @return float|null
-     */
     public function getDurasiJamAttribute()
     {
-        // Jika waktu_selesai belum diisi, return null
         if (is_null($this->waktu_selesai)) {
             return null;
         }
 
-        // Hitung selisih dalam menit, lalu konversi ke jam (dalam bentuk desimal)
         return $this->waktu_selesai->diffInMinutes($this->tanggal) / 60.0;
     }
 }

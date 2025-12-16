@@ -18,6 +18,17 @@ class MejaController extends Controller
         ]);
     }
 
+        public function getAvailable()  
+    {
+        // Hanya ambil meja dengan status 'tersedia'
+        $data = Meja::where('tersedia', true)->with('tipe')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
     // POST /meja
     public function store(Request $request)
     {

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\MejaTipeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +12,8 @@ use App\Http\Controllers\PickupController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\MejaController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MejaTipeController;
+use App\Http\Controllers\UserController;
 
 // === PUBLIC ROUTES (Tidak perlu login) === //
 Route::post('/register', [AuthController::class, 'register']);
@@ -28,14 +29,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     // === MENU (customer bisa lihat, admin full CRUD) === //
-    Route::get('/menu', [MenuController::class, 'index']);
-    Route::get('/menu/{id}', [MenuController::class, 'show']);
-
-    // admin only
-    Route::middleware('admin')->group(function () {
-        Route::post('/menu', [MenuController::class, 'store']);
-        Route::put('/menu/{id}', [MenuController::class, 'update']);
-        Route::delete('/menu/{id}', [MenuController::class, 'destroy']);
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class, 'index']);
+        Route::get('/{id}', [MenuController::class, 'show']);
+        
+        // Upload gambar (untuk semua user yang login)
+        Route::post('/upload', [MenuController::class, 'upload']);
+        
+        // Admin only routes
+        Route::middleware('admin')->group(function () {
+            Route::post('/', [MenuController::class, 'store']);
+            Route::put('/{id}', [MenuController::class, 'update']);
+            Route::delete('/{id}', [MenuController::class, 'destroy']);
+            Route::delete('/{id}/image', [MenuController::class, 'deleteImage']);
+        });
     });
 
 
@@ -47,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // === MEJA (admin manage, customer lihat) === //
     Route::get('/meja', [MejaController::class, 'index']);
+    Route::get('/meja/available', [MejaController::class, 'getAvailable']);
 
     Route::middleware('admin')->group(function () {
         Route::post('/meja', [MejaController::class, 'store']);
@@ -54,25 +62,35 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/meja/{id}', [MejaController::class, 'destroy']);
     });
 
-
-    // === BOOKING MEJA === //
-    Route::post('/booking', [BookingController::class, 'store']);
-    Route::get('/booking/me', [BookingController::class, 'myBooking']);
-
-    // admin konfirmasi
-    Route::middleware('admin')->group(function () {
-        Route::get('/booking', [BookingController::class, 'index']);
-        Route::put('/booking/{id}/confirm', [AdminController::class, 'confirmBooking']);
-        Route::put('/booking/{id}/cancel', [AdminController::class, 'cancelBooking']);
+    Route::prefix('meja-tipe')->group(function () {
+        Route::get('/', [MejaTipeController::class, 'index']);
+        Route::post('/', [MejaTipeController::class, 'store']);
     });
 
 
+    // === BOOKING MEJA === //
+// Booking routes
+Route::prefix('bookings')->group(function () {
+    Route::get('/get', [BookingController::class, 'index']); // Admin: all bookings
+    Route::get('/my-bookings', [BookingController::class, 'myBookings']); // User: own bookings
+    Route::post('/', [BookingController::class, 'store']); // Create booking
+    Route::get('/available-tables', [BookingController::class, 'availableTables']); // Check available tables
+    Route::get('/statistics', [BookingController::class, 'statistics']); // Statistics
+    Route::get('/{id}', [BookingController::class, 'show']); // Booking detail
+    Route::put('/{id}/status', [BookingController::class, 'updateStatus']); // Admin: update status
+    Route::put('/{id}/cancel', [BookingController::class, 'cancel']); // User: cancel booking
+});
+
+
     // === PICKUP (Takeaway order) === //
-    Route::post('/pickup', [PickupController::class, 'store']);
+    Route::post('/pickup', [PickupController::class, 'store']); // Sudah support voucher
     Route::get('/pickup/me', [PickupController::class, 'myPickup']);
+    // routes/api.php
+    Route::post('/upload-payment', [OrderController::class, 'uploadPaymentProof']);
 
     Route::middleware('admin')->group(function () {
         Route::put('/pickup/{id}/status', [PickupController::class, 'updateStatus']);
+        Route::get('/pickups', [PickupController::class, 'index']); // Untuk admin lihat semua
     });
 
 
@@ -89,13 +107,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     // === VOUCHER === //
-    Route::get('/voucher/check/{kode}', [VoucherController::class, 'check']);
+Route::prefix('vouchers')->group(function () {
+    Route::get('/', [VoucherController::class, 'index']);          // GET /api/vouchers
+    Route::post('/', [VoucherController::class, 'store']);         // POST /api/vouchers
+    Route::get('/statistics', [VoucherController::class, 'statistics']); // GET /api/vouchers/statistics
+    Route::get('/{id}', [VoucherController::class, 'show']);       // GET /api/vouchers/{id}
+    Route::put('/{id}', [VoucherController::class, 'update']);     // PUT /api/vouchers/{id}
+    Route::delete('/{id}', [VoucherController::class, 'destroy']); // DELETE /api/vouchers/{id}
+    Route::get('/generate-code', [VoucherController::class, 'generateCode']); // GET /api/vouchers/generate-code
+    Route::get('/check/{kode}', [VoucherController::class, 'check']); // GET /api/vouchers/check/{kode}
+});
 
-    Route::middleware('admin')->group(function () {
-        Route::post('/voucher', [VoucherController::class, 'store']);
-        Route::put('/voucher/{id}', [VoucherController::class, 'update']);
-        Route::delete('/voucher/{id}', [VoucherController::class, 'destroy']);
-        Route::get('/voucher', [VoucherController::class, 'index']);
-    });
+// User search (untuk voucher terbatas)
+Route::get('/users/search', [UserController::class, 'search']);
 
 });

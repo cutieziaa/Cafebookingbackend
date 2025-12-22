@@ -12,6 +12,16 @@ use Illuminate\Http\Request;
 
 class PickupController extends Controller
 {
+    public function index()
+    {
+        return Pickup::with([
+            'user',
+            'order.user',
+            'order.items.menu',
+            'order.voucher'
+        ])->latest()->get();
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -20,35 +30,28 @@ class PickupController extends Controller
             'items' => 'required|array|min:1',
             'items.*.menu_id' => 'required|exists:menu,id',
             'items.*.qty' => 'required|integer|min:1',
-            'voucher_code' => 'sometimes|string|exists:voucher,kode' // Tambahkan ini
+            'voucher_code' => 'sometimes|string|exists:voucher,kode'
         ]);
 
-        // 1. Buat ORDER
-        $order = Order::create([
-            'user_id' => $request->user()->id,
-            'jenis_order' => 'pickup',
-            'total' => 0,
-            'status' => 'pending'
-        ]);
-
+        // 1. Hitung subtotal
         $total = 0;
+        $itemsData = [];
 
-        // 2. Hitung items
         foreach ($request->items as $i) {
-            $menu = Menu::find($i['menu_id']);
-            $subtotal = $menu->harga * $i['qty'];
+            $menu = Menu::findOrFail($i['menu_id']);
+            $qty = $i['qty'];
+            $subtotal = $menu->harga * $qty;
 
-            OrderItem::create([
-                'order_id' => $order->id,
-                'menu_id'  => $menu->id,
-                'qty'      => $i['qty'],
-                'harga'    => $menu->harga
-            ]);
+            $itemsData[] = [
+                'menu_id' => $menu->id,
+                'qty' => $qty,
+                'harga' => $menu->harga,
+            ];
 
             $total += $subtotal;
         }
 
-        // 3. LOGIKA VOUCHER (sama seperti OrderController)
+        // 2. Logika Voucher (sama seperti OrderController)
         $discountAmount = 0;
         $voucherId = null;
 
@@ -58,13 +61,15 @@ class PickupController extends Controller
             if ($voucher) {
                 $isValid = true;
 
-                // Validasi voucher
                 if ($voucher->expired_at && Carbon::now()->isAfter($voucher->expired_at)) {
                     $isValid = false;
                 }
 
                 if ($voucher->limit_penggunaan > 0) {
-                    $usageCount = Order::where('voucher_id', $voucher->id)->count();
+                    $usageCount = Order::where('voucher_id', $voucher->id)
+                        ->whereNotIn('status', ['cancelled', 'canceled'])
+                        ->count();
+
                     if ($usageCount >= $voucher->limit_penggunaan) {
                         $isValid = false;
                     }
@@ -79,48 +84,70 @@ class PickupController extends Controller
                     if ($voucher->diskon_persen) {
                         $discountAmount = $total * ($voucher->diskon_persen / 100);
                     } elseif ($voucher->diskon_nominal) {
-                        $discountAmount = $voucher->diskon_nominal;
+                        $discountAmount = min($voucher->diskon_nominal, $total); // ✅
+                    }
+
+                    if ($voucher->maksimum_diskon && $discountAmount > $voucher->maksimum_diskon) {
+                        $discountAmount = $voucher->maksimum_diskon;
                     }
                 }
             }
         }
 
-        $finalTotal = $total - $discountAmount;
+        $finalTotal = max(0, $total - $discountAmount);
 
-        // 4. Update order dengan voucher
-        $order->update([
+        // 3. Buat Order
+        $order = Order::create([
+            'user_id' => $request->user()->id,
+            'jenis_order' => 'pickup',
             'total' => $finalTotal,
+            'status' => 'pending',
             'voucher_id' => $voucherId,
             'discount_amount' => $discountAmount,
         ]);
+
+        // 4. Simpan items
+        foreach ($itemsData as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'menu_id' => $item['menu_id'],
+                'qty' => $item['qty'],
+                'harga' => $item['harga'],
+            ]);
+        }
+
+        // ✅ Update penggunaan voucher
+        if ($voucherId && $discountAmount > 0) {
+            Voucher::where('id', $voucherId)->increment('penggunaan_sekarang');
+        }
 
         // 5. Buat Pickup
         $pickup = Pickup::create([
             'user_id' => $request->user()->id,
             'order_id' => $order->id,
             'nama_penerima' => $request->nama_penerima,
-            'catatan' => $request->catatan,
+            'catatan' => $request->catatan ?? '',
             'status' => 'pending'
         ]);
 
         return response()->json([
             'message' => 'Pickup order created successfully',
-            'pickup'  => $pickup->load('order.items.menu', 'order.voucher'),
-            'order'   => $order->load('items.menu', 'voucher')
+            'pickup' => $pickup->load(['order.items.menu', 'order.voucher']),
+            'order' => $order->load(['items.menu', 'voucher']),
+            'discount' => [
+                "applied" => $discountAmount > 0,
+                "amount" => (float) $discountAmount,
+                "final_total" => (float) $finalTotal
+            ]
         ], 201);
     }
 
-    // ... method lainnya tetap sama
-
-
-        // === 3. Buat Pickup === //
     public function myPickup(Request $request)
     {
-        return Pickup::with('order.items.menu')
+        return Pickup::with(['order.items.menu', 'order.voucher'])
             ->where('user_id', $request->user()->id)
             ->get();
     }
-    
 
     public function updateStatus(Request $request, $id)
     {
@@ -129,7 +156,6 @@ class PickupController extends Controller
         ]);
 
         $pickup = Pickup::findOrFail($id);
-
         $pickup->update(['status' => $request->status]);
 
         return response()->json([

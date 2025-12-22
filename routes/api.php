@@ -107,12 +107,6 @@ Route::prefix('bookings')->group(function () {
     Route::post('/order', [OrderController::class, 'store']);  // buat order
     Route::get('/order/me', [OrderController::class, 'myOrders']);
 
-    // admin proses order
-    Route::middleware('admin')->group(function () {
-        Route::get('/orders', [OrderController::class, 'index']);
-        Route::put('/orders/{id}/pay', [OrderController::class, 'markAsPaid']);
-        Route::put('/orders/{id}/cancel', [OrderController::class, 'cancel']);
-    });
 
 
     // === VOUCHER === //
@@ -120,7 +114,7 @@ Route::prefix('vouchers')->group(function () {
     Route::get('/', [VoucherController::class, 'index']);          // GET /api/vouchers
     Route::post('/', [VoucherController::class, 'store']);         // POST /api/vouchers
     Route::get('/statistics', [VoucherController::class, 'statistics']); // GET /api/vouchers/statistics
-    Route::get('/{id}', [VoucherController::class, 'show']);       // GET /api/vouchers/{id}
+    Route::get('/{id}', [VoucherController::class, 'show']);       // GET /api/vouchers/{id}    
     Route::put('/{id}', [VoucherController::class, 'update']);     // PUT /api/vouchers/{id}
     Route::delete('/{id}', [VoucherController::class, 'destroy']); // DELETE /api/vouchers/{id}
     Route::get('/generate-code', [VoucherController::class, 'generateCode']); // GET /api/vouchers/generate-code

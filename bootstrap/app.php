@@ -14,7 +14,7 @@ return Application::configure()
         // --- TAMBAHKAN BAGIAN INI ---
         // Daftarkan middleware CORS manual ke grup 'api'
         $middleware->group('api', [
-            \App\Http\Middleware\HandleCors::class,
+            \App\Http\Middleware\HandleCors::class, 
         ]);
         // --- AKHIR BAGIAN YANG DITAMBAHKAN ---
 

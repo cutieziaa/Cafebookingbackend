@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,14 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // === PROTECTED ROUTES (Harus login pakai token Sanctum) === //
 Route::middleware('auth:sanctum')->group(function () {
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('/summary', [DashboardController::class, 'dashboardSummary']);
+    Route::get('/orders/history', [DashboardController::class, 'orderHistory']);
+    Route::get('/pickups/history', [DashboardController::class, 'pickupHistory']);
+    Route::get('/vouchers/history', [DashboardController::class, 'voucherHistory']);
+    Route::get('/bookings/history', [DashboardController::class, 'bookingHistory']);
+    });
 
     // === AUTH === //
     Route::get('/profile', [AuthController::class, 'profile']);
@@ -98,12 +107,6 @@ Route::prefix('bookings')->group(function () {
     Route::post('/order', [OrderController::class, 'store']);  // buat order
     Route::get('/order/me', [OrderController::class, 'myOrders']);
 
-    // admin proses order
-    Route::middleware('admin')->group(function () {
-        Route::get('/orders', [OrderController::class, 'index']);
-        Route::put('/orders/{id}/pay', [OrderController::class, 'markAsPaid']);
-        Route::put('/orders/{id}/cancel', [OrderController::class, 'cancel']);
-    });
 
 
     // === VOUCHER === //
@@ -111,7 +114,7 @@ Route::prefix('vouchers')->group(function () {
     Route::get('/', [VoucherController::class, 'index']);          // GET /api/vouchers
     Route::post('/', [VoucherController::class, 'store']);         // POST /api/vouchers
     Route::get('/statistics', [VoucherController::class, 'statistics']); // GET /api/vouchers/statistics
-    Route::get('/{id}', [VoucherController::class, 'show']);       // GET /api/vouchers/{id}
+    Route::get('/{id}', [VoucherController::class, 'show']);       // GET /api/vouchers/{id}    
     Route::put('/{id}', [VoucherController::class, 'update']);     // PUT /api/vouchers/{id}
     Route::delete('/{id}', [VoucherController::class, 'destroy']); // DELETE /api/vouchers/{id}
     Route::get('/generate-code', [VoucherController::class, 'generateCode']); // GET /api/vouchers/generate-code
@@ -121,4 +124,27 @@ Route::prefix('vouchers')->group(function () {
 // User search (untuk voucher terbatas)
 Route::get('/users/search', [UserController::class, 'search']);
 
+}); 
+
+// routes/api.php
+
+// Admin orders routes
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    // Get all orders
+    Route::get('/orders', [OrderController::class, 'index']);
+    
+    // Get order by ID
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    
+    // Update order status
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+    
+    // Mark as paid
+    Route::put('/orders/{id}/pay', [OrderController::class, 'markAsPaid']);
+    
+    // Cancel order
+    Route::put('/orders/{id}/cancel', [OrderController::class, 'cancel']);
+    
+    // Get all pickups
+    Route::get('/pickups', [PickupController::class, 'index']);
 });
